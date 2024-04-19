@@ -116,21 +116,6 @@ class Validation extends BaseConfig
                 'valid_email',
             ],
         ],
-        'new_password' => [
-            'label' => 'new password',
-            'rules' => [
-                'permit_empty',
-                'max_byte[72]',
-                'strong_password[]',
-            ],
-            'errors' => [
-                'max_byte' => 'Auth.errorPasswordTooLongBytes'
-            ]
-        ],
-        'password_confirm' => [
-            'label' => 'password confirm',
-            'rules' => ['matches[new_password]']
-        ],
         'role' => [
             'label' => 'role',
             'rules' => [

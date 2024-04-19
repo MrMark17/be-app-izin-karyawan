@@ -36,26 +36,52 @@ class EmployeeController extends BaseController
         }
         $users = auth()->getProvider();
         $userObject = $users->findById($id);
+
+        if(!$userObject) {
+            return $this->respondCreated([
+                "status" => "false",
+                "message" => "user not found",
+            ]);
+        }
         // match with database, if match return error
-        if (!array_key_exists('new_password', $requestData)) {
-            // $userObject->fill([
-            //     'username' => $requestData['username'],
-            //     'email'    => $requestData['email'],
-            //     'role'     => $requestData['role'],
-            // ]);
-            return $this->respondCreated('new password not found', 200);
+        if (!array_key_exists('new_password', $requestData) || !$requestData['new_password']) {
+            $userObject->fill([
+                'username' => $requestData['username'],
+                'email'    => $requestData['email'],
+                'role'     => $requestData['role'],
+            ]);
         } else {
-            // $userObject->fill([
-            //     'username' => $requestData['username'],
-            //     'email'    => $requestData['email'],
-            //     'password' => $requestData['new_password'],
-            //     'role'     => $requestData['role'],
-            // ]);
-            return $this->respondCreated('password found', 200);
+            $validation->setRules([
+                'new_password' => [
+                    'label' => 'new password',
+                    'rules' => [
+                        'max_byte[72]',
+                        'strong_password[]',
+                    ],
+                    'errors' => [
+                        'max_byte' => 'Auth.errorPasswordTooLongBytes'
+                    ]
+                ],
+                'password_confirm' => [
+                    'label' => 'password confirm',
+                    'rules' => ['matches[new_password]']
+                ],
+            ]);
+
+            if (! $validation->run($requestData)) {
+                return $this->failValidationErrors($validation->getErrors());
+            }
+            
+            $userObject->fill([
+                'username' => $requestData['username'],
+                'email'    => $requestData['email'],
+                'password' => $requestData['new_password'],
+                'role'     => $requestData['role'],
+            ]);
         }
 
         // if doesn't match, update database and update groups and return success
-        // $users->save($userObject);
-        // return $this->respondCreated('Update success', 200);
+        $users->save($userObject);
+        return $this->respondCreated('Update success', 200);
     }
 }
