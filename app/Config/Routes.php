@@ -5,7 +5,6 @@ use CodeIgniter\Router\RouteCollection;
 /**
  * @var RouteCollection $routes
  */
-$routes->get('/', 'Home::index');
 
 service('auth')->routes($routes);
 
@@ -15,4 +14,7 @@ $routes->group('api', function ($routes) {
         $routes->post('login', 'LoginController::index');
         $routes->post('logout', 'LogoutController::index');
     });
+    $routes->get('employees', 'EmployeeController::index');
+    $routes->get('employees/(:num)', 'EmployeeController::detail/$1');
+    $routes->put('employees/(:num)/update', 'EmployeeController::update/$1');
 });

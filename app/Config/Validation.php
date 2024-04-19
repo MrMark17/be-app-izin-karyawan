@@ -97,4 +97,45 @@ class Validation extends BaseConfig
             ]
         ],
     ];
+
+    public array $profile = [
+        'username' => [
+            'label' => 'username',
+            'rules' => [
+                'required',
+                'max_length[30]',
+                'min_length[3]',
+                'regex_match[/\A[a-zA-Z0-9\.]+\z/]',
+            ],
+        ],
+        'email' => [
+            'label' => 'email',
+            'rules' => [
+                'required',
+                'max_length[254]',
+                'valid_email',
+            ],
+        ],
+        'new_password' => [
+            'label' => 'new password',
+            'rules' => [
+                'permit_empty',
+                'max_byte[72]',
+                'strong_password[]',
+            ],
+            'errors' => [
+                'max_byte' => 'Auth.errorPasswordTooLongBytes'
+            ]
+        ],
+        'password_confirm' => [
+            'label' => 'password confirm',
+            'rules' => ['matches[new_password]']
+        ],
+        'role' => [
+            'label' => 'role',
+            'rules' => [
+                'required',
+            ]
+        ]
+    ];
 }
