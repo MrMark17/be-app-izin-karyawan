@@ -23,7 +23,7 @@ class AddRoleIdToUsers extends Migration
     public function up()
     {
         $fields = [
-            'role' => ['type' => 'ENUM', 'constraint' => array('employee', 'admin', 'superadmin'), 'default' => 'employee', 'null' => false],
+            'role' => ['type' => 'ENUM("employee", "admin", "superadmin")', 'default' => 'employee', 'null' => false],
         ];
         $this->forge->addColumn($this->tables['users'], $fields);
     }

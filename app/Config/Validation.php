@@ -120,6 +120,7 @@ class Validation extends BaseConfig
             'label' => 'role',
             'rules' => [
                 'required',
+                'in_list[employee,admin,superadmin]',
             ]
         ]
     ];

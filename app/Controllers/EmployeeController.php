@@ -6,7 +6,7 @@ use App\Controllers\BaseController;
 use CodeIgniter\API\ResponseTrait;
 use CodeIgniter\HTTP\ResponseInterface;
 
-class EmployeeController extends BaseController
+class EmployeeController extends BaseController  
 {
     use ResponseTrait;
     public function index()
@@ -81,7 +81,27 @@ class EmployeeController extends BaseController
         }
 
         // if doesn't match, update database and update groups and return success
+        if( !($requestData['role'] !== $userObject->role) ) {
+            $userObject->addGroup($requestData['role']);
+            $userObject->removeGroup($userObject->role);
+        }
+        switch($requestData['role']) {
+            case 'admin':
+                $userObject->addGroup('admin');
+                $userObject->removeGroup('employee');
+                break;
+            case 'employee':
+                $userObject->addGroup('employee');
+                $userObject->removeGroup('admin');
+                break;
+        }
         $users->save($userObject);
-        return $this->respondCreated('Update success', 200);
+
+        $response = [
+            'status' => true,
+            'message' => 'Update success',
+            'data' => $userObject
+        ];
+        return $this->respondCreated($response, 200);
     }
 }
